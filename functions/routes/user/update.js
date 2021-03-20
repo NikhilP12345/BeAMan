@@ -7,7 +7,7 @@ const authController = require('../../middlewares/authorization')
 const router = express.Router();
 
 // GET /user
-router.get('/updateClaim', updateClaimController.getUpdateClaim);
+router.get('/updateClaim', authController.auth,updateClaimController.getUpdateClaim);
 
 // POST /user
 router.post('/updateClaim', authController.auth, updateClaimController.postUpdateClaim);
