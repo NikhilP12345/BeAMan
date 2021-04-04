@@ -32,26 +32,25 @@ exports.getContacts = async (req, res, next) => {
   const uid = auth_token.uid;
 
   try{
-    if(!uid) throw "No uid";
+    if(!uid) throw "user-authentication-failed";
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
-    if (!doc.exists) {
-      throw "No Contact Found";
-    } 
-    const Contact = doc.data().Contact;
-    if(!Contact){
-      throw "No Contact Found";
-    }
-    let arrayContact = [];
-    for(const prop in Contact){
-      let temp = {
-        name: Contact[prop],
-        number: prop
+    
+    let contactsList = [];
+    if (doc.exists) {
+      const Contact = doc.data().Contact;
+      if(Contact){
+        for(const prop in Contact){
+          let temp = {
+            name: Contact[prop],
+            number: prop
+          }
+          contactsList.push(temp);
+        }
       }
-      arrayContact.push(temp);
     }
     res.status(201).json({
-      Contacts: arrayContact,
+      contacts: contactsList,
       success: true
     });
   }
@@ -102,7 +101,7 @@ exports.postUpdateFcmToken = async (req, res, next) => {
   const deviceId = req.body.deviceId;
   const uid = auth_token.uid;
   try{
-    if(!uid) throw "No uid";
+    if(!uid) throw "user-authentication-failed";
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
     if (!doc.exists || !doc.data().FcmToken) {
@@ -137,7 +136,7 @@ exports.postUpdateUserLocation = async (req, res, next) => {
   const docId = uid + "#" + deviceId;
 
   try{
-    if(!uid) throw "No uid";
+    if(!uid) throw "user-authentication-failed";
     const updatedLocation = {
       uid: uid,
       geocode: req.body.geocode,
@@ -168,7 +167,7 @@ exports.postUpdateUserContact = async (req, res, next) => {
   const auth_token = req.authInfo;
   const uid = auth_token.uid;
   try{
-    if(!uid) throw "No uid";
+    if(!uid) throw "user-authentication-failed";
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
     if (!doc.exists || !doc.data().Contact) {
@@ -180,10 +179,10 @@ exports.postUpdateUserContact = async (req, res, next) => {
       const Contact = doc.data().Contact;
       const len = Object.keys(Contact).length;
       if(len >= 5){
-        throw "Contacts greater than 5"
+        throw "limit-exceeded"
       }
       if(number in Contact){
-        throw "Number Already Present";
+        throw "contact-already-exists";
       }
       Contact[number] = name;
       const updatedUserRef = await userRef.update({Contact: Contact});
@@ -212,16 +211,16 @@ exports.deleteContact = async(req, res, next) => {
   const uid = auth_token.uid;
 
   try{
-    if(!uid) throw "No uid";
+    if(!uid) throw "user-authentication-failed";
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
     if (!doc.exists || !doc.data().Contact) {
-        throw "Contact not exist"
+        throw "contact-doesnt-exists"
     } 
     else {
       const Contact = doc.data().Contact;
       if(!(number in Contact)){
-        throw "Contact not exist";
+        throw "contact-doesnt-exists";
       }
       delete Contact[number];
       const updatedUserRef = await userRef.update({Contact: Contact});
