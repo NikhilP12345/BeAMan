@@ -3,31 +3,28 @@ const { auth } = require('../../creds/adminSDKWeb');
 const admin = require('../../creds/adminSDKWeb');
 const db=admin.firestore()
 
-const idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjRlMDBlOGZlNWYyYzg4Y2YwYzcwNDRmMzA3ZjdlNzM5Nzg4ZTRmMWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVmltYWwgS3VtYXdhdCIsInBpY3R1cmUiOiJodHRwczovL2ZpcmViYXNlc3RvcmFnZS5nb29nbGVhcGlzLmNvbS92MC9iL2JlLWEtbWFuLWRldi5hcHBzcG90LmNvbS9vL3VzZXJzJTJGNFhXR1I4UmdsTlJYek5uc3N2TVZ3REV0SEp1MSUyRnByb2ZpbGVfaW1hZ2UuanBnP2FsdD1tZWRpYSZ0b2tlbj1mMWM4MGI3NC1mZTI5LTRiZTEtYWUyOS1mNjE1NjkxN2I2NDAiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmUtYS1tYW4tZGV2IiwiYXVkIjoiYmUtYS1tYW4tZGV2IiwiYXV0aF90aW1lIjoxNjE2NDA3NTE3LCJ1c2VyX2lkIjoiNFhXR1I4UmdsTlJYek5uc3N2TVZ3REV0SEp1MSIsInN1YiI6IjRYV0dSOFJnbE5SWHpObnNzdk1Wd0RFdEhKdTEiLCJpYXQiOjE2MTY0MDc1NDcsImV4cCI6MTYxNjQxMTE0NywiZW1haWwiOiJkZXYuZXJrdW1hd2F0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicGhvbmVfbnVtYmVyIjoiKzkxODgyNDA1Mzk3NCIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODgyNDA1Mzk3NCJdLCJlbWFpbCI6WyJkZXYuZXJrdW1hd2F0QGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.Ol_xxdwnZjz9LWwxqqsiJnbZEEnYVWg_7ml6C19P4CRZkaEf1nepTd2yo2Q2mOC_wA4mmgCIc0efVyam0ckqg5wnOWKClu6OzAX_zAs0zSjYL8Ip68KfxAFd3Q7Zjp6yihY_brwfm2c17FcrmWxX1omBchNQ4Ip5sphyKTfRqqHunhGwpWnXwbiGCvQavNUfRA9RQj24b3Hw9lWHZXp_laNNd82C-mmtJGZs-NyP-P0lUMBNJYHLMm07LZoFFe5KOw6pw0rK8rUBgu2pQ-S02N8eNHqkdRhJ_IH4obG45kQNAvcC-ES2oG5hrVwP1r9Xog-I_Jt8bNOwJUQWKZbvkQ"
-
-
 
 // GET
-exports.getUpdateClaim = async (req, res, next) => {
+// exports.getUpdateClaim = async (req, res, next) => {
 
-  admin
-  .auth()
-  .verifyIdToken(idToken)
-  .then((claims) => {
-    console.log(claims);
-    res.status(201).json({
-      success: true
-    });
-  })
-  .catch((error) => {
-    res.send({
-      success: false,
-      error: error,
-      status:"User not exist"
-    })
-  });
+//   admin
+//   .auth()
+//   .verifyIdToken(idToken)
+//   .then((claims) => {
+//     console.log(claims);
+//     res.status(201).json({
+//       success: true
+//     });
+//   })
+//   .catch((error) => {
+//     res.send({
+//       success: false,
+//       error: error,
+//       status:"User not exist"
+//     })
+//   });
   
-};
+// };
   
 
 exports.getContacts = async (req, res, next) => {
