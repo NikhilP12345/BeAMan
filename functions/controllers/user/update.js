@@ -1,14 +1,15 @@
+const { app } = require('firebase-functions');
 const { auth } = require('../../creds/adminSDKWeb');
 const admin = require('../../creds/adminSDKWeb');
 const db=admin.firestore()
 
-const idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjRlMDBlOGZlNWYyYzg4Y2YwYzcwNDRmMzA3ZjdlNzM5Nzg4ZTRmMWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoibmlraGlsIiwiZ2VuZGVyIjoiTWFsZSIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9iZS1hLW1hbi1kZXYiLCJhdWQiOiJiZS1hLW1hbi1kZXYiLCJhdXRoX3RpbWUiOjE2MTU4MDc4NTYsInVzZXJfaWQiOiJxdFRVY091SXNnWFVzd1k2VjlpNFVkOEdKcUMzIiwic3ViIjoicXRUVWNPdUlzZ1hVc3dZNlY5aTRVZDhHSnFDMyIsImlhdCI6MTYxNjA2NTc0MCwiZXhwIjoxNjE2MDY5MzQwLCJlbWFpbCI6InBhcmloYXJuaWtoaWw5MkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX251bWJlciI6Iis5MTk2NjA2NzcxODAiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7InBob25lIjpbIis5MTk2NjA2NzcxODAiXSwiZW1haWwiOlsicGFyaWhhcm5pa2hpbDkyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.B5tG9hr5ra7_6un9p0dKp3J54yM6_BPsEfoE0pZUiV6w5Y7PGGIci7UUuw2g5s-OAoCssPxkp8UBAtDnfJYDevdI4FkWlHMXs28M_8WRKLj2uZsXgsgyQcDHl891chGKgJiqt82c1J0QoxbE8TCcdG-KK7LtND0QQ2M0ullw3LxQUun2sneDXHWaOwvzYgqCLcLb0rip_xY5CFvZlk4KH_x3GutfeRy2YNv9upF-iBOlnrMnZbVEytnQxH4W9-rNXj8CI03gq_X5zTxN0dUKi3MneVvFRhcPC47b8iv8Rf-F_ggx2Fpm0oviBN7H6jna_LJ6u0akkH0V-mBtBTFF6w"
+const idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjRlMDBlOGZlNWYyYzg4Y2YwYzcwNDRmMzA3ZjdlNzM5Nzg4ZTRmMWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVmltYWwgS3VtYXdhdCIsInBpY3R1cmUiOiJodHRwczovL2ZpcmViYXNlc3RvcmFnZS5nb29nbGVhcGlzLmNvbS92MC9iL2JlLWEtbWFuLWRldi5hcHBzcG90LmNvbS9vL3VzZXJzJTJGNFhXR1I4UmdsTlJYek5uc3N2TVZ3REV0SEp1MSUyRnByb2ZpbGVfaW1hZ2UuanBnP2FsdD1tZWRpYSZ0b2tlbj1mMWM4MGI3NC1mZTI5LTRiZTEtYWUyOS1mNjE1NjkxN2I2NDAiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmUtYS1tYW4tZGV2IiwiYXVkIjoiYmUtYS1tYW4tZGV2IiwiYXV0aF90aW1lIjoxNjE2NDA3NTE3LCJ1c2VyX2lkIjoiNFhXR1I4UmdsTlJYek5uc3N2TVZ3REV0SEp1MSIsInN1YiI6IjRYV0dSOFJnbE5SWHpObnNzdk1Wd0RFdEhKdTEiLCJpYXQiOjE2MTY0MDc1NDcsImV4cCI6MTYxNjQxMTE0NywiZW1haWwiOiJkZXYuZXJrdW1hd2F0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicGhvbmVfbnVtYmVyIjoiKzkxODgyNDA1Mzk3NCIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODgyNDA1Mzk3NCJdLCJlbWFpbCI6WyJkZXYuZXJrdW1hd2F0QGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.Ol_xxdwnZjz9LWwxqqsiJnbZEEnYVWg_7ml6C19P4CRZkaEf1nepTd2yo2Q2mOC_wA4mmgCIc0efVyam0ckqg5wnOWKClu6OzAX_zAs0zSjYL8Ip68KfxAFd3Q7Zjp6yihY_brwfm2c17FcrmWxX1omBchNQ4Ip5sphyKTfRqqHunhGwpWnXwbiGCvQavNUfRA9RQj24b3Hw9lWHZXp_laNNd82C-mmtJGZs-NyP-P0lUMBNJYHLMm07LZoFFe5KOw6pw0rK8rUBgu2pQ-S02N8eNHqkdRhJ_IH4obG45kQNAvcC-ES2oG5hrVwP1r9Xog-I_Jt8bNOwJUQWKZbvkQ"
 
+
+
+// GET
 exports.getUpdateClaim = async (req, res, next) => {
-  // const uid = '4XWGR8RglNRXzNnssvMVwDEtHJu1';
-  // console.log(idToken)
-  // const auth_token = req.authInfo;
-  // console.log(auth_token)
+
   admin
   .auth()
   .verifyIdToken(idToken)
@@ -28,6 +29,50 @@ exports.getUpdateClaim = async (req, res, next) => {
   
 };
   
+
+exports.getContacts = async (req, res, next) => {
+  const auth_token = req.authInfo;
+  const uid = auth_token.uid;
+
+  try{
+    if(!uid) throw "No uid";
+    const userRef = db.collection('User').doc(uid);
+    const doc = await userRef.get();
+    if (!doc.exists) {
+      throw "No Contact Found";
+    } 
+    const Contact = doc.data().Contact;
+    if(!Contact){
+      throw "No Contact Found";
+    }
+    let arrayContact = [];
+    for(const prop in Contact){
+      let temp = {
+        name: Contact[prop],
+        number: prop
+      }
+      arrayContact.push(temp);
+    }
+    res.status(201).json({
+      Contacts: arrayContact,
+      success: true
+    });
+  }
+  catch(error){
+    res.status(404);
+    res.send({
+      success: false,
+      error: (error.code)?error.code:error,
+      status:"User Not Found"
+    })
+  }
+}
+
+
+
+
+
+//POST
 exports.postUpdateClaim = (req, res, next) => {
     const auth_token = req.authInfo;
     const email = auth_token.email;
@@ -63,10 +108,10 @@ exports.postUpdateFcmToken = async (req, res, next) => {
     if(!uid) throw "No uid";
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
-    if (!doc.exists) {
+    if (!doc.exists || !doc.data().FcmToken) {
       const FcmToken = {};
       FcmToken[deviceId] = fcmToken;
-      const updatedUserRef = await db.collection('User').doc(uid).set({FcmToken: FcmToken});
+      const updatedUserRef = await db.collection('User').doc(uid).set({FcmToken: FcmToken}, {merge: true});
     } 
     else {
       const FcmToken = doc.data().FcmToken;
@@ -78,7 +123,7 @@ exports.postUpdateFcmToken = async (req, res, next) => {
     });
   }
   catch(error){
-    res.status(404)
+    res.status(404);
     res.send({
       success: false,
       error: (error.code)?error.code:error,
@@ -118,4 +163,82 @@ exports.postUpdateUserLocation = async (req, res, next) => {
     })
   }
 
+}
+
+exports.postUpdateUserContact = async (req, res, next) => {
+  const name = req.body.name;
+  const number = req.body.number;
+  const auth_token = req.authInfo;
+  const uid = auth_token.uid;
+  try{
+    if(!uid) throw "No uid";
+    const userRef = db.collection('User').doc(uid);
+    const doc = await userRef.get();
+    if (!doc.exists || !doc.data().Contact) {
+      const Contact = {};
+      Contact[number] = name
+      const updatedUserRef = await db.collection('User').doc(uid).set({Contact: Contact}, {merge: true});
+    } 
+    else {
+      const Contact = doc.data().Contact;
+      const len = Object.keys(Contact).length;
+      if(len >= 5){
+        throw "Contacts greater than 5"
+      }
+      if(number in Contact){
+        throw "Number Already Present";
+      }
+      Contact[number] = name;
+      const updatedUserRef = await userRef.update({Contact: Contact});
+    }
+    res.status(201).json({
+      success: true
+    });
+  }
+  catch(error){
+    res.status(404)
+    res.send({
+      success: false,
+      error: (error.code)?error.code:error,
+      status:"User Not Found"
+    })
+  }
+}
+
+
+
+//DELETE
+
+exports.deleteContact = async(req, res, next) => {
+  const number = req.body.number;
+  const auth_token = req.authInfo;
+  const uid = auth_token.uid;
+
+  try{
+    if(!uid) throw "No uid";
+    const userRef = db.collection('User').doc(uid);
+    const doc = await userRef.get();
+    if (!doc.exists || !doc.data().Contact) {
+        throw "Contact not exist"
+    } 
+    else {
+      const Contact = doc.data().Contact;
+      if(!(number in Contact)){
+        throw "Contact not exist";
+      }
+      delete Contact[number];
+      const updatedUserRef = await userRef.update({Contact: Contact});
+    }
+    res.status(201).json({
+      success: true
+    });
+  }
+  catch(error){
+    res.status(404)
+    res.send({
+      success: false,
+      error: (error.code)?error.code:error,
+      status:"User Not Found"
+    })
+  }
 }

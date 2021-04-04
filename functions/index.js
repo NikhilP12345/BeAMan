@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const express = require('express');
 
 const bodyParser = require('body-parser');
-const userClaimRoutes = require('./routes/user/update');
+const userRoutes = require('./routes/user/update');
 
 const app = express();
 
@@ -15,11 +15,12 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/user', userClaimRoutes);
+app.use('/user', userRoutes);
+
 
 
 exports.beAMan = functions.https.onRequest(app);
-// const port = process.env.PORT || 8080;
+// const port = process.env.PORT || 5000;
 // app.listen(port, () => {
 //   console.log('Hello world listening on port', port);
 // });
