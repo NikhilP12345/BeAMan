@@ -3,7 +3,7 @@ const express = require('express');
 
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user/update');
-
+const mainRoutes = require('./routes/oneClick/manager');
 const app = express();
 
 app.use(bodyParser.json());
@@ -16,13 +16,16 @@ app.use((req, res, next) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/room', mainRoutes);
 
 
+// exports.beAMan = functions.https.onRequest(app);
+const port = process.env.PORT || 5000;
+const server = app.listen(port);
+const io = require('./socket/socket').init(server);
+io.on('connection', socket => {
+  console.log('Client connected');
+});
 
-exports.beAMan = functions.https.onRequest(app);
-// const port = process.env.PORT || 5000;
-// app.listen(port, () => {
-//   console.log('Hello world listening on port', port);
-// });
 
 

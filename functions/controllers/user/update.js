@@ -5,26 +5,26 @@ const db=admin.firestore()
 
 
 // GET
-// exports.getUpdateClaim = async (req, res, next) => {
+exports.getUpdateClaim = async (req, res, next) => {
 
-//   admin
-//   .auth()
-//   .verifyIdToken(idToken)
-//   .then((claims) => {
-//     console.log(claims);
-//     res.status(201).json({
-//       success: true
-//     });
-//   })
-//   .catch((error) => {
-//     res.send({
-//       success: false,
-//       error: error,
-//       status:"User not exist"
-//     })
-//   });
+  admin
+  .auth()
+  .verifyIdToken(idToken)
+  .then((claims) => {
+    console.log(claims);
+    res.status(201).json({
+      success: true
+    });
+  })
+  .catch((error) => {
+    res.send({
+      success: false,
+      error: error,
+      status:"User not exist"
+    })
+  });
   
-// };
+};
   
 
 exports.getContacts = async (req, res, next) => {
