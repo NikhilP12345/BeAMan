@@ -139,7 +139,7 @@ exports.postUpdateUserLocation = async (req, res, next) => {
     if(!uid) throw "user-authentication-failed";
     const updatedLocation = {
       uid: uid,
-      geocode: req.body.geocode,
+      geohash: req.body.geohash,
       deviceId: req.body.deviceId,
       lat: req.body.latitude,
       long: req.body.longitude,
