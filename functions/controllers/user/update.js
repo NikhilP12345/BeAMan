@@ -1,4 +1,5 @@
 const { app } = require('firebase-functions');
+const { phoneIsRegistered } = require('../../Auxillary/helper');
 const { auth } = require('../../creds/adminSDKWeb');
 const admin = require('../../creds/adminSDKWeb');
 const db=admin.firestore()
@@ -48,6 +49,9 @@ exports.getContacts = async (req, res, next) => {
           contactsList.push(temp);
         }
       }
+    }
+    if(contactsList.length == 0){
+      throw "no-contacts-added";
     }
     res.status(201).json({
       contacts: contactsList,
@@ -168,6 +172,10 @@ exports.postUpdateUserContact = async (req, res, next) => {
   const uid = auth_token.uid;
   try{
     if(!uid) throw "user-authentication-failed";
+    const phoneRef = await admin.auth().getUserByPhoneNumber(number);
+    if(!phoneRef){
+      throw "no-user-found"
+    }
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
     if (!doc.exists || !doc.data().Contact) {
@@ -179,10 +187,10 @@ exports.postUpdateUserContact = async (req, res, next) => {
       const Contact = doc.data().Contact;
       const len = Object.keys(Contact).length;
       if(len >= 5){
-        throw "limit-exceeded"
+        throw "max-contact-limit"
       }
       if(number in Contact){
-        throw "contact-already-exists";
+        throw "already-added";
       }
       Contact[number] = name;
       const updatedUserRef = await userRef.update({Contact: Contact});
@@ -215,12 +223,12 @@ exports.deleteContact = async(req, res, next) => {
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
     if (!doc.exists || !doc.data().Contact) {
-        throw "contact-doesnt-exists"
+        throw "contact-does-not-exist"
     } 
     else {
       const Contact = doc.data().Contact;
       if(!(number in Contact)){
-        throw "contact-doesnt-exists";
+        throw "contact-does-not-exist";
       }
       delete Contact[number];
       const updatedUserRef = await userRef.update({Contact: Contact});

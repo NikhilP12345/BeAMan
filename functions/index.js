@@ -13,12 +13,11 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
-
 app.use('/user', userRoutes);
 
 
 // exports.beAMan = functions.https.onRequest(app);
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
 
 
