@@ -12,7 +12,6 @@ exports.auth = async function (req, res, next) {
       decodedToken.iat=time(decodedToken.iat),
       decodedToken.exp=time(decodedToken.exp)
       req.authInfo=decodedToken
-      console.log(decodedToken.uid)
       next()
     }
     catch (error) {

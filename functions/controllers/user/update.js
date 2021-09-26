@@ -1,8 +1,12 @@
 const { app } = require('firebase-functions');
 const { phoneIsRegistered } = require('../../Auxillary/helper');
 const { auth } = require('../../creds/adminSDKWeb');
+const userUtility = require('../../utilities/userUtility');
+
 const admin = require('../../creds/adminSDKWeb');
 const db=admin.firestore()
+
+
 
 
 // GET
@@ -37,24 +41,35 @@ exports.getContacts = async (req, res, next) => {
     const userRef = db.collection('User').doc(uid);
     const doc = await userRef.get();
     
-    let contactsList = [];
+    let contactList = [];
     if (doc.exists) {
       const Contact = doc.data().Contact;
       if(Contact){
-        for(const prop in Contact){
-          let temp = {
-            name: Contact[prop],
-            number: prop
+        for(const con in Contact){
+          let temp = {};
+          const uid = Contact[con].uid
+          const userProfile = await userUtility.getUserProfileByUid(uid);
+          const userSnapshot = await userUtility.getUserSnapShotByUid(uid);
+          // console.log('Profile>>>' + userProfile);
+          // console.log(userSnapshot);
+          if(!userProfile.err && !userSnapshot.err){
+            console.log("YEs")
+            temp = {
+              name: Contact[con].name,
+              number: con,
+              photoUrl: userProfile.photoURL,
+              roomId: userSnapshot.RoomId
+            }
+            contactList.push(temp);
           }
-          contactsList.push(temp);
         }
       }
     }
-    if(contactsList.length == 0){
+    if(contactList.length == 0){
       throw "no-contacts-added";
     }
     res.status(201).json({
-      contacts: contactsList,
+      contacts: contactList,
       success: true
     });
   }
@@ -177,10 +192,16 @@ exports.postUpdateUserContact = async (req, res, next) => {
       throw "no-user-found"
     }
     const userRef = db.collection('User').doc(uid);
+    if(phoneRef.uid === uid){
+      throw "cannot-add-self-contact";
+    }
     const doc = await userRef.get();
     if (!doc.exists || !doc.data().Contact) {
       const Contact = {};
-      Contact[number] = name
+      Contact[number] = {
+        name : name,
+        uid: phoneRef.uid
+      }
       const updatedUserRef = await db.collection('User').doc(uid).set({Contact: Contact}, {merge: true});
     } 
     else {
@@ -192,7 +213,11 @@ exports.postUpdateUserContact = async (req, res, next) => {
       if(number in Contact){
         throw "already-added";
       }
-      Contact[number] = name;
+      Contact[number] = {
+        name : name,
+        uid: phoneRef.uid
+      }
+
       const updatedUserRef = await userRef.update({Contact: Contact});
     }
     res.status(201).json({
